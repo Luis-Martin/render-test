@@ -16,6 +16,8 @@ const requesLogger = (req, res, next) => {
 
 app.use(requesLogger)
 
+app.use(express.static('dist'))
+
 let notes = [
   {
     id: 1,
