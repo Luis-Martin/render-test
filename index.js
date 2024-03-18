@@ -6,6 +6,16 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 
+const requesLogger = (req, res, next) => {
+  console.log('Method: ', req.method)
+  console.log('Path: ', req.path)
+  console.log('Body: ', req.body)
+  console.log('-----------')
+  next()
+}
+
+app.use(requesLogger)
+
 let notes = [
   {
     id: 1,
