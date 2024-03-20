@@ -1,5 +1,7 @@
-import express, { response } from 'express'
+import 'dotenv/config'
+import express from 'express'
 import cors from 'cors'
+import { Note } from './note.js'
 
 const app = express()
 
@@ -46,7 +48,7 @@ app.get('/', (request, response) => {
 })
 
 app.get('/api/notes', (request, response) => {
-  response.json(notes)
+  Note.find({}).then(notes => response.json(notes))
 })
 
 app.get('/api/notes/:id', (req, res) => {
@@ -90,7 +92,7 @@ app.put('/api/notes/:id', (req, res) => {
   res.json(noteUpdated)
 })
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
