@@ -68,17 +68,18 @@ app.delete('/api/notes/:id', (req, res) => {
 })
 
 app.post('/api/notes', (req, res) => {
-  const maxId = notes.length > 0 ? Math.max(...notes.map(n => n.id)) : 0
-  const newNote = {
-    ...req.body,
-    id: maxId + 1,
-    important: req.body.important || false
-  }
-  
-  if (!req.body.content) return res.status(400).end('Content missing')
+  const body = req.body
 
-  notes = [...notes, newNote]
-  res.json(newNote)
+  if (!body.content) return res.status(400).end('Content missing')
+
+  const note = new Note({
+    content: body.content,
+    important: body.important || false 
+  })
+
+  note
+    .save()
+    .then(savedNote => res.json(savedNote))
 })
 
 app.put('/api/notes/:id', (req, res) => {
