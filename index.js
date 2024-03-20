@@ -58,12 +58,13 @@ app.get('/api/notes/:id', (req, res) => {
 })
 
 app.delete('/api/notes/:id', (req, res) => {
-  const id = Number(req.params.id)
-  const note = notes.find(note => note.id !== id)
-  notes = notes.filter(note => note.id !== id)
+  const { id } = req.params
   
-  if (note) res.status(204).end()
-  else res.status(404).end('Note not found')
+  if (!id) return res.status(204).end()
+  
+  Note
+    .findByIdAndDelete(id)
+    .then(noteDeleted => res.json(noteDeleted))
 })
 
 app.post('/api/notes', (req, res) => {
