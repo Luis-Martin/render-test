@@ -83,14 +83,17 @@ app.post('/api/notes', (req, res) => {
 })
 
 app.put('/api/notes/:id', (req, res) => {
-  const id = Number(req.params.id)
-  const note = notes.find(note => note.id !== id)
+  const id = req.params.id
+  const note = Note.findById(id)
 
   if (!note) return res.status(404).end("Resource not found")
-  
-  const noteUpdated = req.body
-  notes = notes.map(note => note.id !== id ? note : noteUpdated)
-  res.json(noteUpdated)
+
+  const dataUpdated = req.body
+
+  Note
+    .findByIdAndUpdate(id, dataUpdated)
+    .then(rnoteUpdated => res.json(rnoteUpdated))
+    .catch(err => console.log(err))
 })
 
 const PORT = process.env.PORT
