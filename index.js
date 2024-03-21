@@ -44,8 +44,6 @@ app.delete('/api/notes/:id', (req, res, next) => {
 })
 
 app.post('/api/notes', (req, res, next) => {
-  if (!req.body.content) return res.status(400).end('Content missing')
-
   const note = new Note({
     content: req.body.content,
     important: req.body.important || false 
@@ -64,7 +62,11 @@ app.put('/api/notes/:id', (req, res) => {
   const dataUpdated = req.body
 
   Note
-    .findByIdAndUpdate(req.params.id, dataUpdated)
+    .findByIdAndUpdate(
+      req.params.id,
+      dataUpdated,
+      {new: true, runValidators: true, context: 'query'}
+    )
     .then(noteUpdated => res.json(noteUpdated))
     .catch(err => next(err))
 })
@@ -77,11 +79,12 @@ app.use(unknownEndpoint)
 
 
 const errorHandler = (err, req, res, next) => {
-  console.log('ERROR!!!')
+  console.log('ERROR ->', err.name)
   console.log(err.message)
-
+  
   if (err.name === 'CastError') return res.status(400).send({error: 'malformatted id'})
-
+  if (err.name === 'ValidationError') return res.status(400).json({error: err.message})
+  
   next(err)
 }
 
