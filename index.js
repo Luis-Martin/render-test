@@ -39,7 +39,7 @@ app.get('/api/notes/:id', (req, res, next) => {
 app.delete('/api/notes/:id', (req, res, next) => {
   Note
     .findByIdAndDelete(req.params.id)
-    .then(noteDeleted => noteDeleted ? res.json(noteDeleted): res.status(404).end('Note not found'))
+    .then(() => res.status(204).end())
     .catch(err => next(err))
 })
 
