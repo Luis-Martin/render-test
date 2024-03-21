@@ -5,8 +5,6 @@ import { Note } from './note.js'
 
 const app = express()
 
-app.use(express.json())
-app.use(cors())
 
 const requesLogger = (req, res, next) => {
   console.log('Method: ', req.method)
@@ -16,10 +14,11 @@ const requesLogger = (req, res, next) => {
   next()
 }
 
+
+app.use(express.json())
+app.use(cors())
 app.use(requesLogger)
-
 app.use(express.static('dist'))
-
 
 
 app.get('/', (request, response) => {
