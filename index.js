@@ -15,10 +15,10 @@ const requesLogger = (req, res, next) => {
 }
 
 
-app.use(express.json())
 app.use(cors())
-app.use(requesLogger)
 app.use(express.static('dist'))
+app.use(express.json())
+app.use(requesLogger)
 
 
 app.get('/', (request, response) => {
@@ -69,6 +69,13 @@ app.put('/api/notes/:id', (req, res) => {
     .catch(err => next(err))
 })
 
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+
+app.use(unknownEndpoint)
+
+
 const errorHandler = (err, req, res, next) => {
   console.log('ERROR!!!')
   console.log(err.message)
@@ -77,7 +84,6 @@ const errorHandler = (err, req, res, next) => {
 
   next(err)
 }
-
 
 app.use(errorHandler)
 
