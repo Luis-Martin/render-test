@@ -32,7 +32,11 @@ app.get('/api/notes', (request, response) => {
 app.get('/api/notes/:id', (req, res) => {
   Note
     .findById(req.params.id)
-    .then(note => res.json(note))
+    .then(note => note ? res.json(note) : res.status(404).end())
+    .catch(err => {
+      console.log(err)
+      res.status(400).send({error: 'malformatted id'})
+    })
 })
 
 app.delete('/api/notes/:id', (req, res) => {
