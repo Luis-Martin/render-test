@@ -29,54 +29,57 @@ app.get('/api/notes', (request, response) => {
   Note.find({}).then(notes => response.json(notes))
 })
 
-app.get('/api/notes/:id', (req, res) => {
+app.get('/api/notes/:id', (req, res, next) => {
   Note
     .findById(req.params.id)
-    .then(note => note ? res.json(note) : res.status(404).end())
-    .catch(err => {
-      console.log(err)
-      res.status(400).send({error: 'malformatted id'})
-    })
+    .then(note => note ? res.json(note) : res.status(404).end('Note not found'))
+    .catch(err => next(err))
 })
 
-app.delete('/api/notes/:id', (req, res) => {
-  const { id } = req.params
-  
-  if (!id) return res.status(204).end()
-  
+app.delete('/api/notes/:id', (req, res, next) => {
   Note
-    .findByIdAndDelete(id)
-    .then(noteDeleted => res.json(noteDeleted))
+    .findByIdAndDelete(req.params.id)
+    .then(noteDeleted => noteDeleted ? res.json(noteDeleted): res.status(404).end('Note not found'))
+    .catch(err => next(err))
 })
 
-app.post('/api/notes', (req, res) => {
-  const body = req.body
-
-  if (!body.content) return res.status(400).end('Content missing')
+app.post('/api/notes', (req, res, next) => {
+  if (!req.body.content) return res.status(400).end('Content missing')
 
   const note = new Note({
-    content: body.content,
-    important: body.important || false 
+    content: req.body.content,
+    important: req.body.important || false 
   })
 
   note
     .save()
     .then(savedNote => res.json(savedNote))
+    .catch(err => next(err))
 })
 
 app.put('/api/notes/:id', (req, res) => {
-  const id = req.params.id
-  const note = Note.findById(id)
-
-  if (!note) return res.status(404).end("Resource not found")
+  const note = Note.findById(req.params.id)
+  if (!note) return res.status(404).end("Note not found")
 
   const dataUpdated = req.body
 
   Note
-    .findByIdAndUpdate(id, dataUpdated)
-    .then(rnoteUpdated => res.json(rnoteUpdated))
-    .catch(err => console.log(err))
+    .findByIdAndUpdate(req.params.id, dataUpdated)
+    .then(noteUpdated => res.json(noteUpdated))
+    .catch(err => next(err))
 })
+
+const errorHandler = (err, req, res, next) => {
+  console.log('ERROR!!!')
+  console.log(err.message)
+
+  if (err.name === 'CastError') return res.status(400).send({error: 'malformatted id'})
+
+  next(err)
+}
+
+
+app.use(errorHandler)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
