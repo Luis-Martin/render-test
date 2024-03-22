@@ -1,9 +1,9 @@
-const requesLogger = (req, res, next) => {
-  console.log('Method: ', req.method)
-  console.log('Path: ', req.path)
-  console.log('Body: ', req.body)
-  console.log('-----------')
-  next()
+const info = (...params) => {
+  console.log(...params)
 }
 
-export default requesLogger
+const error = (...params) => {
+  console.error(...params)
+}
+
+export { info, error }
