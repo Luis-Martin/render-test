@@ -7,9 +7,9 @@
   "scripts": {
     "build:ui": "rm -rf dist && cd ../notes-frontend/ && npm run build && cp -r dist ../render-test",
     "build:full": "npm run build:ui && git add . && git commit -m uibuild && git push",
-    "dev": "node --watch index.js",
-    "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": " NODE_ENV=development node --watch index.js",
+    "start": "NODE_ENV=production node index.js",
+    "test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" npx NODE_ENV=test jest --runInBand",
     "lint": "npx standard . --fix"
   },
   "author": "",
@@ -21,12 +21,20 @@
     "mongoose": "^8.2.2"
   },
   "devDependencies": {
+    "jest": "^29.7.0",
     "standard": "^17.1.0"
   },
   "eslintConfig": {
     "extends": "./node_modules/standard/eslinrc.json"
   },
   "standard": {
-    "ignore": ["/dist"]
+    "ignore": [
+      "/dist"
+    ]
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "verbose": true,
+    "transform": {}
   }
 }

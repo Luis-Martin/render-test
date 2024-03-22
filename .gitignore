@@ -1,3 +1,7 @@
 node_modules
 .env
 mongo.js
+jest.config.js
+test/average.test.js
+test/reverse.test.js
+utils/for_testing.js
