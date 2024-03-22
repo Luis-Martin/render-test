@@ -5,7 +5,6 @@ import { Note } from './note.js'
 
 const app = express()
 
-
 const requesLogger = (req, res, next) => {
   console.log('Method: ', req.method)
   console.log('Path: ', req.path)
@@ -14,12 +13,10 @@ const requesLogger = (req, res, next) => {
   next()
 }
 
-
 app.use(cors())
 app.use(express.static('dist'))
 app.use(express.json())
 app.use(requesLogger)
-
 
 app.get('/', (request, response) => {
   response.send('<h1>Hello World!</h1>')
@@ -46,7 +43,7 @@ app.delete('/api/notes/:id', (req, res, next) => {
 app.post('/api/notes', (req, res, next) => {
   const note = new Note({
     content: req.body.content,
-    important: req.body.important || false 
+    important: req.body.important || false
   })
 
   note
@@ -55,9 +52,9 @@ app.post('/api/notes', (req, res, next) => {
     .catch(err => next(err))
 })
 
-app.put('/api/notes/:id', (req, res) => {
+app.put('/api/notes/:id', (req, res, next) => {
   const note = Note.findById(req.params.id)
-  if (!note) return res.status(404).end("Note not found")
+  if (!note) return res.status(404).end('Note not found')
 
   const dataUpdated = req.body
 
@@ -65,7 +62,7 @@ app.put('/api/notes/:id', (req, res) => {
     .findByIdAndUpdate(
       req.params.id,
       dataUpdated,
-      {new: true, runValidators: true, context: 'query'}
+      { new: true, runValidators: true, context: 'query' }
     )
     .then(noteUpdated => res.json(noteUpdated))
     .catch(err => next(err))
@@ -77,14 +74,13 @@ const unknownEndpoint = (request, response) => {
 
 app.use(unknownEndpoint)
 
-
 const errorHandler = (err, req, res, next) => {
   console.log('ERROR ->', err.name)
   console.log(err.message)
-  
-  if (err.name === 'CastError') return res.status(400).send({error: 'malformatted id'})
-  if (err.name === 'ValidationError') return res.status(400).json({error: err.message})
-  
+
+  if (err.name === 'CastError') return res.status(400).send({ error: 'malformatted id' })
+  if (err.name === 'ValidationError') return res.status(400).json({ error: err.message })
+
   next(err)
 }
 

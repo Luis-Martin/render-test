@@ -18,7 +18,7 @@ const noteSchema = new mongoose.Schema({
     minLength: 5,
     required: true
   },
-  important: Boolean,
+  important: Boolean
 })
 
 noteSchema.set('toJSON', {
@@ -28,7 +28,6 @@ noteSchema.set('toJSON', {
     delete returnedObject.__v
   }
 })
-
 
 const Note = mongoose.model('Note', noteSchema)
 
