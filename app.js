@@ -8,6 +8,8 @@ import logger from './utils/logger.js'
 
 const app = express()
 
+console.log(process.env)
+
 mongoose.set('strictQuery', false)
 mongoose.connect(config.MONGODB_URI)
   .then(result => {
