@@ -9,7 +9,7 @@
     "build:full": "npm run build:ui && git add . && git commit -m uibuild && git push",
     "dev": " NODE_ENV=development node --watch index.js",
     "start": "NODE_ENV=production node index.js",
-    "test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" npx NODE_ENV=test jest --runInBand",
+    "test": " NODE_ENV=test NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" npx jest --runInBand",
     "lint": "npx standard . --fix"
   },
   "author": "",
@@ -22,7 +22,8 @@
   },
   "devDependencies": {
     "jest": "^29.7.0",
-    "standard": "^17.1.0"
+    "standard": "^17.1.0",
+    "supertest": "^6.3.4"
   },
   "eslintConfig": {
     "extends": "./node_modules/standard/eslinrc.json"
