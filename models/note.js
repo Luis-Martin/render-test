@@ -19,4 +19,4 @@ noteSchema.set('toJSON', {
 
 const Note = mongoose.model('Note', noteSchema)
 
-export { Note }
+export default Note
