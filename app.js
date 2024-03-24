@@ -1,5 +1,6 @@
 import config from './utils/config.js'
 import express from 'express'
+import 'express-async-errors'
 import cors from 'cors'
 import notesRouter from './controllers/notes.js'
 import mongoose from 'mongoose'
