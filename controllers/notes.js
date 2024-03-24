@@ -7,46 +7,41 @@ notesRouter.get('/', (request, response) => {
   Note.find({}).then(notes => response.json(notes))
 })
 
-notesRouter.get('/:id', (req, res, next) => {
-  Note
-    .findById(req.params.id)
-    .then(note => note ? res.json(note) : res.status(404).end('Note not found'))
-    .catch(err => next(err))
+notesRouter.get('/:id', async (req, res, next) => {
+  const note = await Note.findById(req.params.id)
+  if (note) res.json(note)
+  else res.status(404).end()
 })
 
-notesRouter.delete('/:id', (req, res, next) => {
-  Note
-    .findByIdAndDelete(req.params.id)
-    .then(() => res.status(204).end())
-    .catch(err => next(err))
+notesRouter.delete('/:id', async (req, res) => {
+  await Note.findByIdAndDelete(req.params.id)
+  res.status(204).end()
 })
 
-notesRouter.post('/', (req, res, next) => {
+notesRouter.post('/', async (req, res, next) => {
   const note = new Note({
     content: req.body.content,
     important: req.body.important || false
   })
 
-  note
-    .save()
-    .then(savedNote => res.json(savedNote))
-    .catch(err => next(err))
+  const savedNote = await note.save()
+  res.status(201).json(savedNote)
 })
 
-notesRouter.put('/:id', (req, res, next) => {
-  const note = Note.findById(req.params.id)
-  if (!note) return res.status(404).end('Note not found')
+notesRouter.put('/:id', async (req, res, next) => {
+  const note = {
+    content: req.body.content,
+    important: req.body.important
+  }
 
-  const dataUpdated = req.body
-
-  Note
+  const updatedNote = await Note
     .findByIdAndUpdate(
       req.params.id,
-      dataUpdated,
+      note,
       { new: true, runValidators: true, context: 'query' }
     )
-    .then(noteUpdated => res.json(noteUpdated))
-    .catch(err => next(err))
+
+  res.json(updatedNote)
 })
 
 export default notesRouter
