@@ -1,5 +1,6 @@
 import express from 'express'
 import Note from '../models/note.js'
+import User from '../models/user.js'
 
 const notesRouter = express.Router()
 
@@ -19,12 +20,18 @@ notesRouter.delete('/:id', async (req, res) => {
 })
 
 notesRouter.post('/', async (req, res, next) => {
+  const user = await User.findById(req.body.userId)
+
   const note = new Note({
     content: req.body.content,
-    important: req.body.important || false
+    important: req.body.important || false,
+    user: user.id
   })
 
   const savedNote = await note.save()
+  user.notes = user.notes.concat(savedNote._id)
+  await user.save()
+
   res.status(201).json(savedNote)
 })
 
