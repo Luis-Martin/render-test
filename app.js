@@ -4,6 +4,7 @@ import 'express-async-errors'
 import mongoose from 'mongoose'
 import notesRouter from './controllers/notes.js'
 import usersRouter from './controllers/users.js'
+import loginRouter from './controllers/login.js'
 import config from './utils/config.js'
 import logger from './utils/logger.js'
 import middleware from './utils/middleware.js'
@@ -26,6 +27,7 @@ app.use(middleware.requesLogger)
 
 app.use('/api/notes', notesRouter)
 app.use('/api/users', usersRouter)
+app.use('/api/login', loginRouter)
 
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)
